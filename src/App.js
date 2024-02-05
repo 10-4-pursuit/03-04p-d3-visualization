@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
 
+import BarCharts from './BarChart';
+import { useState } from 'react';
+import FileInput from './FileInput';
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [data, setData] = useState([]);
+
+    const onFileSelect = (file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const jsonData = JSON.parse(event.target.result);
+                setData(jsonData.data);
+            } catch (error) {
+                console.log("Error parsing JSON file:", error);
+            }
+        };
+
+        reader.readAsText(file); 
+    }
+
+    return (
+        <div className="App">
+            <FileInput onFileSelect={onFileSelect} />
+            <BarCharts data={data} />
+        </div>
+    );
 }
 
 export default App;
+
